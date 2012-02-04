@@ -11,6 +11,12 @@ set hidden
 " show numbers on buffer
 set number
 
+set wildmenu
+
+if has("cmdline_hist")
+  set history=1000
+endif
+
 " set default indentations for tabstop, softtabstop,
 " shiftwidth lengths and set expandtab on to use
 " space instead of
