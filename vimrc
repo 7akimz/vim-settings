@@ -8,10 +8,24 @@ set nocompatible
 " when they are not the current
 set hidden
 
-" show numbers on buffer
+" Show ruler
+set ruler
+
+" Show status bar
+set ls=2
+
+" Show numbers on buffer
 set number
 
+" Show files included in directory
 set wildmenu
+
+set winheight=5
+" Set unused window height
+set winminheight=5
+
+" Set the current window height
+set winheight=60
 
 if has("cmdline_hist")
   set history=1000
@@ -43,7 +57,7 @@ endif
 let mapleader = ","
 
 " map ,v to open a split window with .vimrc file
-nmap <leader>v :split $MYVIMRC<CR>
+nmap <leader>vim :split $MYVIMRC<CR>
 
 " map the ,l to toggle invisible
 nmap <leader>l :set list!<CR>
@@ -81,3 +95,32 @@ function! Preserve(command)
 endfunction
 
 nmap _$ :call Preserve("%s/\\s\\+$//e")<CR>
+
+" Expand the path to the current directory
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>e :edit %%
+map <leader>v :view %%
+
+" Toggle between the last two files
+nnoremap <leader>b <c-^>
+
+" Command-T config
+
+" Open file flush the cache then open fuzzy finder
+map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
+
+" Open files limited to the opened file directory
+map <leader>gf :CommandTFlush<cr>\|:CommandT %%<cr>
+" These options limited to rails usage or any
+" dir that contains the same folder heirarchy
+
+" Open search in models directory
+map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
+" Open search in views directory
+map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
+" Open search in controllers directory
+map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
+" Open search in the helpers directory 
+map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
+" Open search in the lib directory 
+map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
