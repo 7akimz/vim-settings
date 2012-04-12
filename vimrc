@@ -1,21 +1,27 @@
+
 " load the pathogen plugin
 call pathogen#infect()
 
+"""""""""""""""""""""""""""""""""""""""
+" Basic Editing Configuration
+"""""""""""""""""""""""""""""""""""""""
+
 " use vim settings instead of vi
 set nocompatible
-
 " hide and don't close the buffer 
 " when they are not the current
 set hidden
-
 " Show ruler
 set ruler
-
 " Show status bar
 set ls=2
-
 " Show numbers on buffer
 set number
+" search case-sensitive when upper-case char
+set ignorecase smartcase
+
+"	List all matches without completing, then each full match
+set wildmode=longest,list
 
 " Show files included in directory
 set wildmenu
@@ -23,12 +29,18 @@ set wildmenu
 set winheight=5
 " Set unused window height
 set winminheight=5
-
 " Set the current window height
 set winheight=60
 
+" highlight the matched search pattern
+set hlsearch
+" highlight matched word while typing
+set incsearch
+
+set cursorline
+
 if has("cmdline_hist")
-  set history=1000
+  set history=10000
 endif
 
 " set default indentations for tabstop, softtabstop,
@@ -37,24 +49,30 @@ endif
 " tabs
 set ts=2 sts=2 sw=2 expandtab
 
-" set the background lighting 
-"set background=dark
-
-" enable vim to detect syntax
-syntax on
 
 " check if vim has any plugin 
 " and indentation file for the current buffer
 filetype plugin indent on
 
-" change vim used color
-colorscheme 256_xoria
+" enable vim to detect syntax
+syntax on
 
-if has("autocmd")
-  autocmd bufwritepost vimrc source $MYVIMRC
-endif
 " set vim leader character to , instead of \
 let mapleader = ","
+
+"""""""""""""""""""""""""""""""""""""""
+" Status Line
+"""""""""""""""""""""""""""""""""""""""
+:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+
+"""""""""""""""""""""""""""""""""""""""
+" Color
+"""""""""""""""""""""""""""""""""""""""
+set t_Co=256 " 256 colors
+" set the background lighting
+set background=dark
+color xoria256-pluk
+
 
 " map ,v to open a split window with .vimrc file
 nmap <leader>vim :split $MYVIMRC<CR>
@@ -65,7 +83,21 @@ nmap <leader>l :set list!<CR>
 " set change symbols for tabs and eol
 set listchars=tab:▸\ ,eol:¬
 
+"""""""""""""""""""""""""""""""""""""""
+" Custom AutoCmd
+"""""""""""""""""""""""""""""""""""""""
+
 if has("autocmd")
+
+  " Jump to last cursor position unless it's invalid or in an event handler
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+
+  " Auto source .vimrc when saved
+  autocmd bufwritepost vimrc source $MYVIMRC
+
   " Enable file type detection
   filetype on
   " Syntax strict languages
@@ -104,7 +136,39 @@ map <leader>v :view %%
 " Toggle between the last two files
 nnoremap <leader>b <c-^>
 
+"""""""""""""""""""""""""""""""""""""""
+" Multipurpose tab key
+" Indent at beginning else complete
+"""""""""""""""""""""""""""""""""""""""
+function! InsertTabWrapper()
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<tab>"
+  else
+    return "\<c-p>"
+  endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <s-tab> <c-n>
+
+
+"""""""""""""""""""""""""""""""""""""""
+" Promote Variable to rspec let
+
+"""""""""""""""""""""""""""""""""""""""
+function! PromoteToLet()
+  :normal! dd
+  :normal! P
+  :.s/\(\w\+\) = \(.*\)$/let(:\1) { \2 }/
+  :normal ==
+endfunction
+:command! PromoteToLet :call PromoteToLet()
+:map <leader>p :PromoteToLet<cr>
+
+"""""""""""""""""""""""""""""""""""""""
 " Command-T config
+
+"""""""""""""""""""""""""""""""""""""""
 
 " Open file flush the cache then open fuzzy finder
 map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
