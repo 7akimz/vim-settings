@@ -21,7 +21,7 @@ set number
 set ignorecase smartcase
 
 "	List all matches without completing, then each full match
-set wildmode=longest,list
+"set wildmode=longest,list
 
 " Show files included in directory
 set wildmenu
@@ -49,16 +49,24 @@ endif
 " tabs
 set ts=2 sts=2 sw=2 expandtab
 
-
 " check if vim has any plugin 
 " and indentation file for the current buffer
 filetype plugin indent on
 
-" enable vim to detect syntax
-syntax on
-
 " set vim leader character to , instead of \
 let mapleader = ","
+
+"""""""""""""""""""""""""""""""""""""""
+"Misc Keys Maps
+"""""""""""""""""""""""""""""""""""""""
+" map splits with control key, not control w keys
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-h>h
+nnoremap <c-l> <c-l>l
+
+" Insert a hash rocket with <c-l>
+imap <c-l> <space>=><space>
 
 """""""""""""""""""""""""""""""""""""""
 " Status Line
@@ -71,8 +79,10 @@ let mapleader = ","
 set t_Co=256 " 256 colors
 " set the background lighting
 set background=dark
-color xoria256-pluk
-
+" enable vim to detect syntax
+syntax on
+colorscheme solarized
+"color xoria256-pluk
 
 " map ,v to open a split window with .vimrc file
 nmap <leader>vim :split $MYVIMRC<CR>
@@ -106,6 +116,7 @@ if has("autocmd")
 
   " Customization based on own style
   autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
+  autocmd FileType python setlocal ts=4 sts=4 sw=4 expandtab
   autocmd FileType html setlocal ts=2 sts=2 sw=2 expandtab
   autocmd FileType css setlocal ts=2 sts=2 sw=2 expandtab
   autocmd FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
