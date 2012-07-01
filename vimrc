@@ -1,3 +1,5 @@
+" use vim settings instead of vi
+set nocompatible
 
 " load the pathogen plugin
 call pathogen#infect()
@@ -5,9 +7,7 @@ call pathogen#infect()
 """""""""""""""""""""""""""""""""""""""
 " Basic Editing Configuration
 """""""""""""""""""""""""""""""""""""""
-
-" use vim settings instead of vi
-set nocompatible
+set history=10000
 " hide and don't close the buffer 
 " when they are not the current
 set hidden
@@ -20,11 +20,9 @@ set number
 " search case-sensitive when upper-case char
 set ignorecase smartcase
 
-"	List all matches without completing, then each full match
-set wildmode=longest,list
+set showmatch
 
-" Show files included in directory
-set wildmenu
+set showcmd
 
 set winheight=5
 " Set unused window height
@@ -39,9 +37,12 @@ set incsearch
 
 set cursorline
 
-if has("cmdline_hist")
-  set history=10000
-endif
+"	List all matches without completing, then each full match
+"set wildmode=longest,full
+set wildmode=list:longest
+
+" Show files included in directory
+set wildmenu
 
 " set default indentations for tabstop, softtabstop,
 " shiftwidth lengths and set expandtab on to use
@@ -78,7 +79,7 @@ imap <c-l> <space>=><space>
 """""""""""""""""""""""""""""""""""""""
 set t_Co=256 " 256 colors
 " set the background lighting
-set background=dark
+set background=light
 " enable vim to detect syntax
 syntax on
 colorscheme solarized
@@ -122,31 +123,33 @@ if has("autocmd")
   autocmd FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
   " Example of treating a file as another type of file
   " autocmd BufNewFile,BufRead *.rss,*.atom setfiletype xml
+  autocmd VimEnter * :call Plugins()
 endif
 
-"""""""""""""""""""""""""""""""""""""""
-" Tabular
-"""""""""""""""""""""""""""""""""""""""
+function Plugins()
+  """""""""""""""""""""""""""""""""""""""
+  " Tabular
+  """""""""""""""""""""""""""""""""""""""
+  if exists(":Tabularize")
+    nmap <Leader>a= :Tabularize /=<CR>
+    vmap <Leader>a= :Tabularize /=<CR>
+    nmap <Leader>a: :Tabularize /:\zs<CR>
+    vmap <Leader>a: :Tabularize /:\zs<CR>
 
-if exists(":Tabularize")
-  nmap <Leader>a= :Tabularize /=<CR>
-  vmap <Leader>a= :Tabularize /=<CR>
-  nmap <Leader>a: :Tabularize /:\zs<CR>
-  vmap <Leader>a: :Tabularize /:\zs<CR>
-
-  inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
-   
-  function! s:align()
-    let p = '^\s*|\s.*\s|\s*$'
-    if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-      let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-      let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-      Tabularize/|/l1
-      normal! 0
-      call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-    endif
-  endfunction
-endif
+    inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+     
+    function! s:align()
+      let p = '^\s*|\s.*\s|\s*$'
+      if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
+        let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
+        let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
+        Tabularize/|/l1
+        normal! 0
+        call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
+      endif
+    endfunction
+  endif
+endfunction
 
 
 function! Preserve(command)
