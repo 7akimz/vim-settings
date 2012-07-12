@@ -1,8 +1,7 @@
 " use vim settings instead of vi
 set nocompatible
 
-" load the pathogen plugin
-call pathogen#infect()
+runtime bundle/vim-unbundle/unbundle.vim
 
 """""""""""""""""""""""""""""""""""""""
 " Basic Editing Configuration
@@ -11,6 +10,11 @@ set history=10000
 " hide and don't close the buffer 
 " when they are not the current
 set hidden
+
+" Change the mapping of backtick and single quote
+nnoremap ' `
+nnoremap ` '
+
 " Show ruler
 set ruler
 " Show status bar
@@ -19,6 +23,8 @@ set ls=2
 set number
 " search case-sensitive when upper-case char
 set ignorecase smartcase
+
+set autoindent
 
 set showmatch
 
@@ -32,17 +38,37 @@ set winheight=60
 
 " highlight the matched search pattern
 set hlsearch
+
 " highlight matched word while typing
 set incsearch
 
 set cursorline
 
-"	List all matches without completing, then each full match
-"set wildmode=longest,full
-set wildmode=list:longest
+set shell=bash
+" Prevent Vim from clobbering the scrollback buffer. See
+" http://www.shallowsky.com/linux/noaltscreen.html
+set t_ti= t_te=
 
+" Intuitive backspacing in insert mode
+set backspace=indent,eol,start
+ 
+ " File-type highlighting and configuration.
+ " Run :filetype (without args) to see what you may have
+ " to turn on yourself, or just set them all to be sure.
+ syntax on
+ filetype on
+ filetype plugin on
+ filetype indent on
+
+"List all matches without completing, then each full match
+set wildmode=list:longest
 " Show files included in directory
 set wildmenu
+
+set scrolloff=3
+
+" set vim leader character to , instead of \
+let mapleader = ","
 
 " set default indentations for tabstop, softtabstop,
 " shiftwidth lengths and set expandtab on to use
@@ -50,12 +76,10 @@ set wildmenu
 " tabs
 set ts=2 sts=2 sw=2 expandtab
 
-" check if vim has any plugin 
-" and indentation file for the current buffer
-filetype plugin indent on
-
-" set vim leader character to , instead of \
-let mapleader = ","
+" Store temporary files in a central spot
+set backup
+set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 
 """""""""""""""""""""""""""""""""""""""
 "Misc Keys Maps
@@ -80,10 +104,8 @@ imap <c-l> <space>=><space>
 set t_Co=256 " 256 colors
 " set the background lighting
 set background=light
-" enable vim to detect syntax
-syntax on
+
 colorscheme solarized
-"color xoria256-pluk
 
 " map ,v to open a split window with .vimrc file
 nmap <leader>vim :split $MYVIMRC<CR>
@@ -113,14 +135,10 @@ if has("autocmd")
   filetype on
   " Syntax strict languages
   autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
-  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
   " Customization based on own style
-  autocmd FileType ruby setlocal ts=2 sts=2 sw=2 expandtab
-  autocmd FileType python setlocal ts=4 sts=4 sw=4 expandtab
-  autocmd FileType html setlocal ts=2 sts=2 sw=2 expandtab
-  autocmd FileType css setlocal ts=2 sts=2 sw=2 expandtab
-  autocmd FileType javascript setlocal ts=2 sts=2 sw=2 noexpandtab
+  autocmd FileType ruby,haml,eruby,yaml,html,javascript,sass,cucumber set ai sw=2 sts=2 et
+  autocmd FileType python set sw=4 sts=4 et
   " Example of treating a file as another type of file
   " autocmd BufNewFile,BufRead *.rss,*.atom setfiletype xml
   autocmd VimEnter * :call Plugins()
