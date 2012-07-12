@@ -120,10 +120,19 @@ if has("autocmd")
   autocmd FileType python setlocal ts=4 sts=4 sw=4 expandtab
   autocmd FileType html setlocal ts=2 sts=2 sw=2 expandtab
   autocmd FileType css setlocal ts=2 sts=2 sw=2 expandtab
-  autocmd FileType javascript setlocal ts=4 sts=4 sw=4 noexpandtab
+  autocmd FileType javascript setlocal ts=2 sts=2 sw=2 noexpandtab
   " Example of treating a file as another type of file
   " autocmd BufNewFile,BufRead *.rss,*.atom setfiletype xml
   autocmd VimEnter * :call Plugins()
+
+  " Set line numbering to absolute when in insert
+  " and to relative everywhere else
+  autocmd InsertEnter * :set number
+  autocmd InsertLeave * :set relativenumber
+
+  " Set numbering when focus lost and gained
+  :au FocusLost * :set number
+  :au FocusGained * :set relativenumber
 endif
 
 function Plugins()
@@ -227,3 +236,18 @@ map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
 map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
 " Open search in the lib directory 
 map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
+
+"""""""""""""""""""""""""""""""""""""""
+" Switch between absolute and relative
+" line numbering
+"""""""""""""""""""""""""""""""""""""""
+
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set number
+  else
+    set relativenumber
+  endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>
